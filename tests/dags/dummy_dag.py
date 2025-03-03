@@ -1,17 +1,10 @@
 from airflow import DAG
-from airflow.operators.python import PythonOperator
-from datetime import datetime
+from airflow.operators.dummy_operator import DummyOperator  # Incorrect import
 
-def hello():
-    print("Hello from dummy DAG!")
+dag = DAG(
+    dag_id="broken_dag",
+    schedule_interval=None,
+    start_date="2024-01-01",  # Incorrect start_date format (should be datetime)
+)
 
-with DAG(
-    dag_id="dummy_dag",
-    start_date=datetime(2023, 1, 1),
-    schedule_interval="@daily",
-    catchup=False,
-) as dag:
-    task = PythonOperator(
-        task_id="say_hello",
-        python_callable=hello,
-    )
+task = DummyOperator(task_id="dummy", dag=dag)
